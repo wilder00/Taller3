@@ -5,6 +5,11 @@
  */
 package miVentana;
 
+import conexionBD.Conectar;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import mis.clases.CajaDePago;
@@ -25,6 +30,7 @@ public class MiFormulario extends javax.swing.JFrame {
     DefaultTableModel modeloTablaCliente;
     int codSucursalDefinido;
     int codCajaDefinido;
+    Conectar conectar;
     /**
      * Creates new form MiFormulario
      */
@@ -38,9 +44,10 @@ public class MiFormulario extends javax.swing.JFrame {
         this.modeloTablaCliente = new DefaultTableModel(null,tituloTablaCliente);
         jTableListaTienda.setModel(modelo);
         jTableColaDeClientes.setModel(this.modeloTablaCliente);
-        
+        conectar = new Conectar();
         
         //desabilitando botones
+        /*
         jButtonEncolarCliente.setEnabled(false);
         jButtonclientesEnColaCaja1.setEnabled(false);
         jButtonclientesEnColaCaja2.setEnabled(false);
@@ -52,11 +59,80 @@ public class MiFormulario extends javax.swing.JFrame {
         jButtonclientesEnColaCaja8.setEnabled(false);
         jButtonclientesEnColaCaja9.setEnabled(false);
         jButtonclientesEnColaCaja10.setEnabled(false);
-        jButtonVerRecaudacionDeCaja.setEnabled(false);
+        jButtonVerRecaudacionDeCaja.setEnabled(false);*/
         //definir la sucursal en -1 que significa no definido;
         this.codSucursalDefinido = -1;
         this.codCajaDefinido = -1;
+        cargar();
+        comprobarCajas();
+        actualizarListaTiendas();
+        
     }
+    
+    public void cargar(){
+        
+        String sql="Select * from tienda";       
+        Connection con=conectar.conexion();
+        try {        
+            Statement st=con.createStatement();
+            ResultSet rs=st.executeQuery(sql);
+            Tienda tienda;
+            while(rs.next()){
+                int cod = rs.getInt("cod_sucursal");
+                String distri = rs.getString("distrito");
+                tienda = new Tienda(cod , distri);
+                this.Sucursales.insertarOrdenado(tienda);
+            }       
+        } catch (SQLException e) {
+            System.out.println("Error ...."+e.toString());       
+        }
+
+
+        sql="Select * from cajadepago";       
+        //Connection con=conectar.conexion();
+        try {        
+            Statement st=con.createStatement();
+            ResultSet rs=st.executeQuery(sql);
+            CajaDePago caja;
+            while(rs.next()){
+                int cod_suc = rs.getInt("cod_sucursal");
+                int num_caja = rs.getInt("num_de_caja");
+                float monto_recau = rs.getFloat("monto_recaudado");
+                Tienda.montoTotalRecaudado = Tienda.montoTotalRecaudado+monto_recau;
+                caja = new CajaDePago();
+                caja.setMontoRecaudadoEnCaja(monto_recau);
+                this.Sucursales.getTiendabyId(cod_suc).getCajas()[num_caja]=caja;
+                
+            }       
+        } catch (SQLException e) {
+            System.out.println("Error ...."+e.toString());       
+        }
+        
+        
+        
+        sql="Select * from cliente";       
+        //Connection con=conectar.conexion();
+        try {        
+            Statement st=con.createStatement();
+            ResultSet rs=st.executeQuery(sql);
+            Cliente cli;
+            while(rs.next()){
+                String dni = rs.getString("dni");
+                float montoAPagar = rs.getFloat("monto_a_pagar");
+                int codSucursal = rs.getInt("cod_sucursal");
+                int codCaja = rs.getInt("num_de_caja");
+                cli = new Cliente(dni,montoAPagar);
+                this.Sucursales.getTiendabyId(codSucursal).getCajas()[codCaja].agregarCliente(cli);
+                
+            }       
+        } catch (SQLException e) {
+            System.out.println("Error ...."+e.toString());       
+        }
+        
+        
+        
+        
+    }  
 
     //funciones internas 
     private void comprobarCajas(){
@@ -829,7 +905,7 @@ public class MiFormulario extends javax.swing.JFrame {
             
             float montoAPagar = Float.parseFloat(monto);
             Cliente cli= new Cliente(dni, montoAPagar);
-            int cajaInsertada = this.Sucursales.getTiendabyId(this.codSucursalDefinido).insertarclienteACaja(cli);
+            int cajaInsertada = this.Sucursales.getTiendabyId(this.codSucursalDefinido).insertarClienteACaja(cli);
             
             this.comprobarCajas();
         

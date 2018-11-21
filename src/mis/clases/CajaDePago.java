@@ -30,18 +30,16 @@ public class CajaDePago {
     public float getMontoRecaudadoEnCaja() {
         return montoRecaudadoEnCaja;
     }
-    
-    
-    //Método que adicione un cliente a la cola, verifique que el dni no se repita.
-    public void agregarCliente(Cliente c){
-        
+    public void setMontoRecaudadoEnCaja(float f){
+        this.montoRecaudadoEnCaja = f;
+    }
+    public boolean seRepiteDni(String dni){
+        boolean repite = false;
         ArrayCola<Cliente> auxC = new ArrayCola<Cliente>();
         Cliente temp = null;
-        boolean repite = false;
-        
         while(!this.clientes.colaVacia()){//se tiene que desencolar todo para volver a encolarlo despues
             temp = this.clientes.desencolar();
-            if(temp.getDni().equalsIgnoreCase(c.getDni())){
+            if(temp.getDni().equalsIgnoreCase(dni)){
                 repite = true; //una vez que se sepa que repite no cambiará
             }
             auxC.encolar(temp);
@@ -50,6 +48,17 @@ public class CajaDePago {
         while(!auxC.colaVacia()){
             this.clientes.encolar(auxC.desencolar());
         }
+        
+        return repite;
+        
+    }
+    
+    
+    //Método que adicione un cliente a la cola, verifique que el dni no se repita.
+    public void agregarCliente(Cliente c){
+        
+        
+        boolean repite = this.seRepiteDni(c.getDni());
         
         if(!repite){
             this.clientes.encolar(c);
