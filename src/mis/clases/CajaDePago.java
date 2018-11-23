@@ -57,14 +57,14 @@ public class CajaDePago {
     //Método que adicione un cliente a la cola, verifique que el dni no se repita.
     public void agregarCliente(Cliente c){
         
+        //la validacion de que no se repita que lo haga la tienda
+        //boolean repite = this.seRepiteDni(c.getDni());
         
-        boolean repite = this.seRepiteDni(c.getDni());
-        
-        if(!repite){
+        //if(!repite){
             this.clientes.encolar(c);
-        }else{
-            JOptionPane.showMessageDialog(null, "No se ha registrado cliente porque el dni se Repite");
-        }
+        //}else{
+        //    JOptionPane.showMessageDialog(null, "No se ha registrado cliente porque el dni se Repite");
+        //}
         
         
     }

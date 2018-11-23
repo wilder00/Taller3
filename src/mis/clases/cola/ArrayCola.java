@@ -3,7 +3,7 @@ package mis.clases.cola;
 import javax.swing.JOptionPane;
 
 public class ArrayCola<E> implements Cola<E>{
-    private static final int TAMAÑO=5;
+    private static final int TAMAÑO=15;
     private E []arC;
     private int frentec,finalc;
 
