@@ -604,6 +604,9 @@
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JTextField" name="jTextFieldDNICliente">
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldDNIClienteActionPerformed"/>
+                          </Events>
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel6">
                           <Properties>

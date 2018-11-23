@@ -47,7 +47,7 @@ public class MiFormulario extends javax.swing.JFrame {
         conectar = new Conectar();
         
         //desabilitando botones
-        /*
+        
         jButtonEncolarCliente.setEnabled(false);
         jButtonclientesEnColaCaja1.setEnabled(false);
         jButtonclientesEnColaCaja2.setEnabled(false);
@@ -59,7 +59,7 @@ public class MiFormulario extends javax.swing.JFrame {
         jButtonclientesEnColaCaja8.setEnabled(false);
         jButtonclientesEnColaCaja9.setEnabled(false);
         jButtonclientesEnColaCaja10.setEnabled(false);
-        jButtonVerRecaudacionDeCaja.setEnabled(false);*/
+        jButtonVerRecaudacionDeCaja.setEnabled(false);
         //definir la sucursal en -1 que significa no definido;
         this.codSucursalDefinido = -1;
         this.codCajaDefinido = -1;
@@ -537,6 +537,12 @@ public class MiFormulario extends javax.swing.JFrame {
 
         jLabel5.setText("D.N.I. :");
 
+        jTextFieldDNICliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldDNIClienteActionPerformed(evt);
+            }
+        });
+
         jLabel6.setText("Monto a pagar:");
 
         jButtonEncolarCliente.setText("Enconlar Cliente");
@@ -901,14 +907,25 @@ public class MiFormulario extends javax.swing.JFrame {
     private void jButtonEncolarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEncolarClienteActionPerformed
         String dni = jTextFieldDNICliente.getText();
         String monto = jTextFieldMontoAPagarCliente.getText();
-        if(!dni.equalsIgnoreCase("") && !monto.equalsIgnoreCase("")){
-            
-            float montoAPagar = Float.parseFloat(monto);
-            Cliente cli= new Cliente(dni, montoAPagar);
-            int cajaInsertada = this.Sucursales.getTiendabyId(this.codSucursalDefinido).insertarClienteACaja(cli);
-            
-            this.comprobarCajas();
         
+        if(!dni.equalsIgnoreCase("") && !monto.equalsIgnoreCase("")){
+            if(dni.length() == 8){
+                float montoAPagar = Float.parseFloat(monto);
+                if(montoAPagar > 0){
+
+                    Cliente cli= new Cliente(dni, montoAPagar);
+                    this.Sucursales.getTiendabyId(this.codSucursalDefinido).insertarClienteACaja(cli);
+
+                    this.comprobarCajas();
+
+                }else{
+                    JOptionPane.showMessageDialog(this, "tiene que insertar un monto mayor a  0.0");
+                }
+            }else{
+                JOptionPane.showMessageDialog(this, "El dni del cliente debe tener 8 caracteres");
+            }
+            
+      
         }else{
             JOptionPane.showMessageDialog(this, "tiene que insertar informacion de cliente");
         }
@@ -971,6 +988,10 @@ public class MiFormulario extends javax.swing.JFrame {
         String info = "monto recaudadado total es de: s/. "+ Tienda.montoTotalRecaudado;
         jTextAreaInfoDeTienda.setText(info);
     }//GEN-LAST:event_jButtonRecaudacionTActionPerformed
+
+    private void jTextFieldDNIClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDNIClienteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldDNIClienteActionPerformed
 
     
     

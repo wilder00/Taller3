@@ -56,28 +56,23 @@ public class Tienda {
     // Método que seleccione aleatoriamente una caja e inserte un nuevo cliente a la cola,
     // en caso la caja no este habilitado debe crearla para insertar al cliente en la cola.
     
-    public int insertarClienteACaja(Cliente c){
-        int cajaInsertada =-1;
+    public void insertarClienteACaja(Cliente c){
         Random ran = new Random();
-        boolean repiteDni = false;
+        
         boolean insertado = false;
         //Quiero validar el caso en que la caja este llena de clientes, y el caso en que todas las cajas esten llenas
         
         boolean todoLleno = true;
-        Cliente temp;
         
         for (int i = 0; i < this.TAM_CAJAS; i++) {
             if(this.cajas[i]== null || !this.cajas[i].colaDeClientes().colaLlena()){
                 todoLleno = false;
-            }
-            
-            if(this.cajas[i].seRepiteDni(c.getDni())){
                 break;
             }
         }
         
-        if(!todoLleno && !repiteDni){
-            while(!insertado ){
+        if(!todoLleno){
+            while(!insertado){
                 int num = ran.nextInt(TAM_CAJAS);
                 if(cajas[num]==null){
                     CajaDePago nuevaCaja = new CajaDePago();
@@ -85,22 +80,17 @@ public class Tienda {
                 }
                 if(!cajas[num].getClientes().colaLlena()){
                     cajas[num].agregarCliente(c);
-                    cajaInsertada = num;
                     insertado = true;
-                    JOptionPane.showMessageDialog(null, "cliente fue insertado en la caja "+(cajaInsertada+1));
+                    JOptionPane.showMessageDialog(null, "cliente fue insertado en la caja "+(num+1));
                 }
             }
         }else{
-            if(!todoLleno)
-                JOptionPane.showMessageDialog(null, "no se pudo insertar al cliente porque todas las cajas estan llenas");
-            if(!repiteDni)
-                JOptionPane.showMessageDialog(null, "Se Repite el dni en alguna caja, un dni solo pertenece a una persona");
+            JOptionPane.showMessageDialog(null, "no se pudo insertar al cliente porque todas las cajas estan llenas");
         }
-        return cajaInsertada;
         
     }
         
-            
+    //--------------------------------------------------------------------------------------------------        
     public String toString(){
         String dato ="Codigo de sucursal:"+this.codSucursal+"\n"
                 + "Distrito: "+this.distrito+"\n"
